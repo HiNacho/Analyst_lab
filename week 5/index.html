@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Marketing Case Study - AnalystLab Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-base: #020617;
+            --bg-surface: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --primary: #14b8a6;
+            --primary-hover: #0d9488;
+            --success: #10b981;
+            --danger: #ef4444;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            --bg-base: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-card: #f1f5f9;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --success: #059669;
+            --danger: #dc2626;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .logo-container {
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+        }
+
+        .nav-item button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+        }
+
+        .nav-item button:hover {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active button {
+            background-color: var(--primary);
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mode-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .mode-toggle-btn:hover {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .intern-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Main Content Container */
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 2.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .page-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .tab-content {
+            display: none;
+            flex-grow: 1;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Overview Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .stat-val.success { color: var(--success); }
+
+        .stat-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Case Study Report Styles */
+        .report-layout {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1200px) {
+            .report-layout {
+                grid-template-columns: 1fr;
+            }
+            .toc-container {
+                display: none;
+            }
+        }
+
+        .report-body {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: var(--card-shadow);
+            line-height: 1.7;
+        }
+
+        .report-section {
+            margin-bottom: 3rem;
+        }
+
+        .report-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-section h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem 0;
+            color: var(--primary);
+        }
+
+        .report-section p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .report-section ul, .report-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .report-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Interactive Charts Container */
+        .chart-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        /* Table Design */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .styled-table th {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            text-align: left;
+            font-weight: 600;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .styled-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .styled-table tr:last-of-type td {
+            border-bottom: none;
+        }
+
+        .styled-table tr:nth-of-type(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        body.light-mode .styled-table tr:nth-of-type(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        /* Alert Banners */
+        .alert-banner {
+            border-left: 4px solid var(--primary);
+            background-color: var(--bg-card);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .alert-banner h4 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* Table of Contents Floating */
+        .toc-container {
+            position: sticky;
+            top: 2.5rem;
+            height: fit-content;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .toc-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toc-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toc-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .toc-link:hover {
+            color: var(--primary);
+            padding-left: 4px;
+        }
+
+        /* Presentation Slides CSS */
+        .slideshow-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .slide-deck {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #0f172a;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+        }
+
+        .slide-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2.5rem;
+            opacity: 0;
+            transform: translateX(30px);
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            color: #f8fafc;
+            background-color: #0f172a;
+        }
+
+        .slide-frame.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slide-category {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #14b8a6;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-top: 0.25rem;
+        }
+
+        .slide-body {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .slide-cols-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .slide-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #14b8a6;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .slide-card ul {
+            list-style-type: square;
+            padding-left: 1.2rem;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .slide-card li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .slide-stat {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #10b981;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-stat-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Slide controls */
+        .slide-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+        }
+
+        .slide-btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .slide-btn:hover:not(:disabled) {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .slide-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* Presenter Notes Panel */
+        .presenter-notes {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .notes-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notes-body {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        /* LinkedIn Card Styles */
+        .linkedin-card {
+            max-width: 600px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 0 auto 2rem auto;
+            box-shadow: var(--card-shadow);
+        }
+
+        .li-header {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .li-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .li-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .li-username {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .li-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .li-body {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            white-space: pre-line;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .copy-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Download Section Styles */
+        .download-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .download-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 280px;
+        }
+
+        .download-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .dl-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .dl-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .dl-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .dl-btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .dl-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Print Layouts */
+        .print-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .print-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .print-btn:hover {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                display: block !important;
+            }
+            .sidebar, .page-header, .print-btn-container, .toc-container, .sidebar-footer {
+                display: none !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+            }
+            .report-layout {
+                display: block !important;
+            }
+            .report-body {
+                border: none !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background-color: white !important;
+            }
+            .chart-box {
+                page-break-inside: avoid !important;
+                border: 1px solid #ccc !important;
+                background-color: white !important;
+            }
+            .styled-table {
+                page-break-inside: avoid !important;
+            }
+            .report-section {
+                page-break-inside: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <h1 class="logo-title">AnalystLab Africa</h1>
+            <p class="logo-subtitle">Week 5 Case Study</p>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item active" data-tab="report">
+                <button>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Case Study Report
+                </button>
+            </li>
+            <li class="nav-item" data-tab="slides">
+                <button>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 4v16M17 4v16M3 8h18M3 16h18"></path></svg>
+                    Interactive Slides
+                </button>
+            </li>
+
+            <li class="nav-item" data-tab="downloads">
+                <button>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Downloads & Resources
+                </button>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="mode-toggle-btn" id="mode-toggle">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="mode-icon"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <span id="mode-text">Light Mode</span>
+            </button>
+            <div class="intern-tag">Batch B | Week 5 Submission</div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h2 class="page-title" id="main-title">Business Analytics Case Study Report</h2>
+        </header>
+
+        <!-- Stats Overview Row -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Outreaches</div>
+                <div class="stat-val">11,162</div>
+                <div class="stat-desc">Complete call logs analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Subscribed deposits</div>
+                <div class="stat-val success">5,289</div>
+                <div class="stat-desc">47.38% average conversion rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Top conversion month</div>
+                <div class="stat-val" style="color: var(--primary);">Dec</div>
+                <div class="stat-desc">90.91% subscription rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Strongest Driver</div>
+                <div class="stat-val" style="color: #3b82f6;">Duration</div>
+                <div class="stat-desc">36.87% predictive importance</div>
+            </div>
+        </section>
+
+        <!-- Tab 1: Case Study Report -->
+        <section class="tab-content active" id="report-tab">
+            <div class="print-btn-container">
+                <button class="print-btn" onclick="window.print()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Print Report / Export PDF
+                </button>
+            </div>
+            <div class="report-layout">
+                <article class="report-body">
+                    <div class="report-section" id="sec-intro">
+                        <h2>1. Introduction</h2>
+                        <p>In retail banking, term deposits represent a stable and low-cost source of funding, which banks can deploy for lending activities to drive profitability. However, retail banks face intense competition and rising customer acquisition costs (CAC). Direct marketing campaigns, primarily conducted via telephone calls, remain a primary channel for selling term deposits. While direct marketing is personal, it is often inefficient, resulting in low conversion rates, customer fatigue, and high operational costs.</p>
+                        <p>This report analyzes historical campaign data from a retail bank to understand customer behavior and optimize the conversion rate of term deposit subscriptions. By leveraging exploratory data analysis (EDA) and machine learning (Random Forest feature importance), we identify key drivers of subscription success and provide data-driven recommendations to maximize campaign return on investment (ROI).</p>
+                    </div>
+
+                    <div class="report-section" id="sec-problem">
+                        <h2>2. Business Problem Statement</h2>
+                        <p>Direct telephone marketing campaigns suffer from low efficiency. In our dataset, comprising 11,162 customer contacts, the average subscription conversion rate is 47.38%. This means 52.62% of calls result in rejection. The bank's outreach is currently unsegmented and untargeted, placing high volumes of cold calls (especially in certain months like May) that create campaign fatigue, increase call center overheads, and damage brand goodwill.</p>
+                        <p>The business challenges we solve in this report are:</p>
+                        <ul>
+                            <li><strong>Subscription Determinants</strong>: Why do some customers subscribe to term deposits while others do not?</li>
+                            <li><strong>Target Segments</strong>: Which customer groups are more likely to respond positively to marketing campaigns?</li>
+                            <li><strong>Operational Inefficiencies</strong>: How can we reduce call center volume while keeping the total number of deposits high?</li>
+                        </ul>
+                    </div>
+
+                    <div class="report-section" id="sec-method">
+                        <h2>3. Dataset Description & Methodology</h2>
+                        <p>The dataset analyzed is <code>bank.csv</code>, which contains 11,162 rows and 17 columns, with no missing values. The target variable is <code>deposit</code> (binary: yes/no), representing whether the client subscribed to a term deposit. Features encompass client demographic details, financial profiles, campaign contact details, and historical campaign records.</p>
+                        <p>Our analytical workflow is as follows:</p>
+                        <ol>
+                            <li><strong>Data Aggregation</strong>: Grouping categorical features to analyze conditional subscription probabilities.</li>
+                            <li><strong>Feature Binning</strong>: Segmenting continuous numerical variables (such as age, account balance, call duration, and contact count) into quantiles/intervals to capture non-linear behaviors.</li>
+                            <li><strong>Statistical Modeling</strong>: Training a Random Forest Classifier to assign relative feature importance scores, isolating the top drivers of subscription success.</li>
+                        </ol>
+                    </div>
+
+                    <div class="report-section" id="sec-findings">
+                        <h2>4. Key Findings & Data Analysis</h2>
+                        <p>Our exploratory analysis and predictive modeling revealed that subscription conversion is highly correlated with specific behavioral, temporal, and demographic features.</p>
+                        
+                        <h3>Statistical Key Drivers (Feature Importance)</h3>
+                        <p>Training a Random Forest Classifier on label-encoded features determined the relative importance of each feature in predicting subscriptions:</p>
+                        
+                        <div class="chart-box">
+                            <div class="chart-title">Random Forest Feature Importance (%)</div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-importance"></canvas>
+                            </div>
+                        </div>
+
+                        <p>As shown above, <strong>Call Duration</strong> is the single most dominant predictor (36.87% relative importance), followed by <strong>Balance</strong> (8.88%), <strong>Age</strong> (8.40%), and <strong>Month</strong> (8.32%).</p>
+
+                        <h3>Deep Dive on Key Drivers</h3>
+                        
+                        <h4>1. The Call Duration Effect (Golden Metric)</h4>
+                        <p>Call duration has a direct, positive correlation with subscription. Long conversations give agents time to address concerns, outline interest rate calculations, and close the sale.</p>
+                        <div class="chart-box">
+                            <div class="chart-title">Call Duration Bin vs. Subscription rate</div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-duration"></canvas>
+                            </div>
+                        </div>
+                        <ul>
+                            <li><strong>0-2 mins</strong>: Converts at only <strong>9.02%</strong> (represents immediate hang-ups or failed initial pitches).</li>
+                            <li><strong>3.5-5.5 mins</strong>: Converts at <strong>48.54%</strong>.</li>
+                            <li><strong>9.5m+ mins</strong>: Converts at a staggering <strong>84.70%</strong>.</li>
+                        </ul>
+
+                        <h4>2. The "May Campaign" Bottleneck</h4>
+                        <p>We discovered a major misalignment between marketing volume and conversion rates across different months of the year:</p>
+                        <div class="chart-box">
+                            <div class="chart-title">Monthly Call Volume vs. Subscription Rate</div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-months"></canvas>
+                            </div>
+                        </div>
+                        <p>The bank is pouring massive resources into May (2,824 calls, 25.3% of total volume), yet May records the lowest subscription rate of the year (**32.76%**). In contrast, transitional months like March (89.86% conversion), September (84.33%), and October (82.40%) are highly underserved but convert at exceptional rates.</p>
+
+                        <h4>3. Diminishing Returns of Contact Frequency</h4>
+                        <p>Re-calling the same customer during a campaign yields sharp diminishing returns. Our analysis shows that after the 3rd attempt, conversion rates collapse:</p>
+                        <div class="chart-box">
+                            <div class="chart-title">Subscription Rate by Contact Frequency in Current Campaign</div>
+                            <div class="chart-wrapper">
+                                <canvas id="chart-campaign"></canvas>
+                            </div>
+                        </div>
+                        <p>While the first contact converts at <strong>53.38%</strong>, the rate drops to <strong>31.40%</strong> for 6-10 contacts, and down to <strong>22.38%</strong> for 10+ contacts. Calling customers more than 3 times is an operational waste and causes brand annoyance.</p>
+                    </div>
+
+                    <div class="report-section" id="sec-insights">
+                        <h2>5. Business Insights & Segmentation</h2>
+                        <p>Using demographic and financial cross-tabulation, we identify target opportunities and high-risk profiles:</p>
+                        
+                        <div class="alert-banner">
+                            <h4>🚀 High Opportunity Customer Segments</h4>
+                            <ul>
+                                <li><strong>Students & Retirees</strong>: Students convert at <strong>74.72%</strong>, and retirees convert at <strong>66.32%</strong>. These cohorts have high interest in simple, low-risk interest-bearing accounts.</li>
+                                <li><strong>High Account Balance</strong>: Customers in the top quintile (>€1,708 balance) convert at <strong>58.00%</strong>, showing they have the liquidity to commit capital.</li>
+                                <li><strong>Prior Warm Leads</strong>: Customers with a successful prior campaign outcome (<code>poutcome = success</code>) convert at **91.32%** in the current campaign.</li>
+                            </ul>
+                        </div>
+
+                        <div class="alert-banner" style="border-left-color: var(--danger);">
+                            <h4 style="color: var(--danger);">⚠️ High Risk / Avoid Segments</h4>
+                            <ul>
+                                <li><strong>Borrowing/Debtor Clients</strong>: Customers with personal loans convert at only <strong>33.15%</strong> and housing loans convert at <strong>36.64%</strong>. These clients are using cash to pay debt, leaving no room for savings deposits.</li>
+                                <li><strong>Blue-Collar Workers</strong>: The bank placed 1,944 calls to blue-collar workers, but they convert at a below-average rate of **36.42%**.</li>
+                                <li><strong>Unknown Contact Channels</strong>: Calls where the contact method (e.g. cellular, telephone) is unknown yield only **22.59%** conversion.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="report-section" id="sec-recs">
+                        <h2>6. Actionable Recommendations</h2>
+                        <p>Based on our statistical analysis, we recommend the following five strategic initiatives:</p>
+                        
+                        <h3>1. Re-Allocate Monthly Campaign Budgets</h3>
+                        <p>Reduce outreach volume in May by 50% and shift call center capacity to March, April, September, and October. Shifting resources to these high-performing transitional months will capture clients when they are more receptive to savings offers, increasing campaign ROI.</p>
+                        
+                        <h3>2. Implement a Smart Call-Capping Policy</h3>
+                        <p>Enforce a hard cap of <strong>3 contact attempts</strong> per customer per campaign. If a customer is contacted three times without subscribing, they should be flagged as inactive and removed from the calling queue. This will save call center resources and prevent customer fatigue.</p>
+                        
+                        <h3>3. Segment-Specific Product Pushing</h3>
+                        <p>Create separate campaigns for target segments:</p>
+                        <ul>
+                            <li>Pitch low-risk, predictable steady-yield products to <strong>Retirees</strong>.</li>
+                            <li>Pitch high-yield, flexible-tenure micro-savings products to <strong>Students</strong>.</li>
+                            <li>Avoid cold-calling debtors with deposit offers; instead, cross-sell loan refinance products.</li>
+                        </ul>
+                        
+                        <h3>4. Enforce Database Contact Enrichment</h3>
+                        <p>Prioritize cellular contact channels (54.33% conversion) and enrich the client database to eliminate the "unknown" contact channel classification (22.59% conversion). Update customer records during regular app logins or branch visits.</p>
+                        
+                        <h3>5. Automate Warm Lead Priority</h3>
+                        <p>Automate immediate calling queues to target prior campaign successes (<code>poutcome = success</code>) at the start of any new campaign. These clients are highly loyal and represent low-hanging fruit with a 91.32% subscription probability.</p>
+                    </div>
+
+                    <div class="report-section" id="sec-conclusion">
+                        <h2>7. Conclusion</h2>
+                        <p>By moving away from unsegmented high-volume cold-calling (epitomized by the massive May campaigns) and transitioning to target segments (students, retirees, high-balance clients, and warm leads), the bank can achieve higher conversion rates with a fraction of the current calling volume. Implementing contact capping and database enrichment will improve campaign efficiency, reduce acquisition costs, and maximize deposit revenues.</p>
+                    </div>
+                </article>
+
+                <!-- Floating Sidebar Table of Contents -->
+                <aside class="toc-container">
+                    <h3 class="toc-title">Report Outline</h3>
+                    <ul class="toc-list">
+                        <li><a href="#sec-intro" class="toc-link">1. Introduction</a></li>
+                        <li><a href="#sec-problem" class="toc-link">2. Business Problem</a></li>
+                        <li><a href="#sec-method" class="toc-link">3. Methodology</a></li>
+                        <li><a href="#sec-findings" class="toc-link">4. Key Findings</a></li>
+                        <li><a href="#sec-insights" class="toc-link">5. Business Insights</a></li>
+                        <li><a href="#sec-recs" class="toc-link">6. Recommendations</a></li>
+                        <li><a href="#sec-conclusion" class="toc-link">7. Conclusion</a></li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <!-- Tab 2: Slideshow Presentation -->
+        <section class="tab-content" id="slides-tab">
+            <div class="slideshow-container">
+                <div class="slide-deck">
+                    <!-- Slide 1 -->
+                    <div class="slide-frame active" id="slide-1">
+                        <div class="slide-header">
+                            <span class="slide-category">Business Presentation</span>
+                            <span class="slide-number">Slide 1 of 9</span>
+                        </div>
+                        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <h1 style="font-family: 'Outfit'; font-size: 2.25rem; font-weight: 800; color: white; margin-bottom: 0.5rem; line-height: 1.2;">BANK MARKETING CAMPAIGN OPTIMIZATION</h1>
+                            <p style="color: var(--primary); font-size: 1.15rem; font-style: italic; margin-bottom: 2rem;">Maximizing Deposit Subscriptions via Statistical Driver Analysis</p>
+                            <div style="border-top: 1px solid #334155; padding-top: 1.25rem; display: flex; gap: 3rem;">
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Program</div>
+                                    <div style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">AnalystLab Africa Data Analytics</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Prepared By</div>
+                                    <div style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Data Analyst Intern</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Timeline</div>
+                                    <div style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Batch B | Week 5</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="slide-frame" id="slide-2">
+                        <div class="slide-header">
+                            <span class="slide-category">Problem Statement</span>
+                            <span class="slide-number">Slide 2 of 9</span>
+                        </div>
+                        <div class="slide-body slide-cols-2">
+                            <div class="slide-card">
+                                <div class="slide-card-title">Campaign Inefficiency</div>
+                                <ul>
+                                    <li>Direct telemarketing campaigns represent a major operational cost for retail banks.</li>
+                                    <li>Our dataset includes 11,162 customer contact records.</li>
+                                    <li>Current outreach is unsegmented and untargeted, placing thousands of cold calls.</li>
+                                    <li>High volumes of calls to cold contacts result in campaign fatigue, resource waste, and brand annoyance.</li>
+                                </ul>
+                            </div>
+                            <div class="slide-card" style="align-items: center; justify-content: center;">
+                                <div class="slide-stat">47.38%</div>
+                                <div class="slide-stat-label">Average Subscription Conversion Rate</div>
+                                <p style="font-size: 0.8rem; color: #94a3b8; text-align: center; margin-top: 0.75rem; line-height: 1.4;">
+                                    5,289 clients subscribed to term deposits.<br>
+                                    5,873 clients rejected the campaign offers.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="slide-frame" id="slide-3">
+                        <div class="slide-header">
+                            <span class="slide-category">Methodology</span>
+                            <span class="slide-number">Slide 3 of 9</span>
+                        </div>
+                        <div class="slide-body slide-cols-2">
+                            <div class="slide-card">
+                                <div class="slide-card-title">Dataset Characteristics</div>
+                                <ul>
+                                    <li><strong>Volume</strong>: 11,162 rows, 17 columns. No missing values.</li>
+                                    <li><strong>Target Variable</strong>: <code>deposit</code> (yes / no).</li>
+                                    <li><strong>Demographics</strong>: Age, occupation (job), marital, education.</li>
+                                    <li><strong>Financial Profiles</strong>: Yearly balance, personal loans, housing loans, credit defaults.</li>
+                                    <li><strong>Campaign metrics</strong>: Duration, month, contact channel, previous outcome.</li>
+                                </ul>
+                            </div>
+                            <div class="slide-card">
+                                <div class="slide-card-title">Analytical Approach</div>
+                                <ul>
+                                    <li><strong>Exploratory Data Analysis (EDA)</strong>: Conditional probability analysis to isolate conversion patterns.</li>
+                                    <li><strong>Feature Engineering</strong>: Binning continuous data (age, balance, campaign frequency) to identify non-linear relationships.</li>
+                                    <li><strong>Driver Significance Modelling</strong>: Training a Random Forest Classifier to assign relative feature importance.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="slide-frame" id="slide-4">
+                        <div class="slide-header">
+                            <span class="slide-category">Key Drivers</span>
+                            <span class="slide-number">Slide 4 of 9</span>
+                        </div>
+                        <div class="slide-body">
+                            <div style="background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                                <div style="font-size: 0.95rem; font-weight: 600; color: #14b8a6; margin-bottom: 0.5rem; text-align: center;">Statistical Drivers of Campaign Conversion</div>
+                                <div style="flex-grow: 1; position: relative; max-height: 180px;">
+                                    <canvas id="chart-slide-importance"></canvas>
+                                </div>
+                                <p style="font-size: 0.75rem; color: #94a3b8; text-align: center; margin-top: 0.5rem;">
+                                    *Relative feature predictive importance (%) generated by Random Forest Classifier.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5 -->
+                    <div class="slide-frame" id="slide-5">
+                        <div class="slide-header">
+                            <span class="slide-category">The Golden Metric</span>
+                            <span class="slide-number">Slide 5 of 9</span>
+                        </div>
+                        <div class="slide-body slide-cols-2">
+                            <div class="slide-card">
+                                <div class="slide-card-title">The Call Duration Effect</div>
+                                <ul>
+                                    <li>Call duration is the single strongest predictor of subscription.</li>
+                                    <li><strong>Shortest calls (0-2 mins)</strong>: Only <strong>9.0%</strong> convert, representing immediate hang-ups or failed pitches.</li>
+                                    <li><strong>Interactive Pitch (3.5-5.5 mins)</strong>: Converts at <strong>48.5%</strong>.</li>
+                                    <li><strong>Product Deep-Dive (9.5+ mins)</strong>: Converts at <strong>84.7%</strong>. Longer calls allow proper presentation of financial yields.</li>
+                                </ul>
+                            </div>
+                            <div class="slide-card">
+                                <div class="slide-card-title">Contact attempts cap</div>
+                                <ul>
+                                    <li>Calling a client repeatedly yields sharp diminishing returns.</li>
+                                    <li><strong>1 Contact Attempt</strong>: Converts at **53.4%** (highest efficiency).</li>
+                                    <li><strong>2-3 Contact Attempts</strong>: Converts at **46.3% - 46.8%**.</li>
+                                    <li><strong>6-10 Contact Attempts</strong>: Conversions drop to **31.4%**.</li>
+                                    <li><strong>10+ Contact Attempts</strong>: Conversions sink to **22.4%**.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 6 -->
+                    <div class="slide-frame" id="slide-6">
+                        <div class="slide-header">
+                            <span class="slide-category">Temporal Dynamics</span>
+                            <span class="slide-number">Slide 6 of 9</span>
+                        </div>
+                        <div class="slide-body slide-cols-2">
+                            <div class="slide-card">
+                                <div class="slide-card-title">May campaign fatigue</div>
+                                <ul>
+                                    <li><strong>High Volume Bottleneck</strong>: The bank pours massive resources into May (2,824 calls, 25.3% of total).</li>
+                                    <li><strong>Poor Conversion</strong>: May yields the lowest subscription rate of the year (**32.76%**).</li>
+                                    <li>This mismatch creates high agent cost-per-acquisition.</li>
+                                </ul>
+                            </div>
+                            <div class="slide-card">
+                                <div class="slide-card-title">The Off-Peak Opportunity</div>
+                                <ul>
+                                    <li>Transitional and winter months are highly underserved but convert at exceptional rates.</li>
+                                    <li><strong>March</strong>: 89.86% conversion rate.</li>
+                                    <li><strong>September</strong>: 84.33% conversion rate.</li>
+                                    <li><strong>October</strong>: 82.40% conversion rate.</li>
+                                    <li><strong>December</strong>: 90.91% conversion rate.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 7 -->
+                    <div class="slide-frame" id="slide-7">
+                        <div class="slide-header">
+                            <span class="slide-category">Customer Segmentation</span>
+                            <span class="slide-number">Slide 7 of 9</span>
+                        </div>
+                        <div class="slide-body slide-cols-2">
+                            <div class="slide-card" style="background-color: #064e3b; border-color: #047857;">
+                                <div class="slide-card-title" style="color: #34d399;">🚀 Opportunity Segments</div>
+                                <ul style="color: #a7f3d0;">
+                                    <li><strong>Students & Retirees</strong>: Students convert at **74.72%**, Retirees at **66.32%**. Excellent target demographics.</li>
+                                    <li><strong>High Balances</strong>: Customers with account balance > €1,708 convert at **58.00%** (highly liquid wealth).</li>
+                                    <li><strong>Warm Leads</strong>: Prior campaign successes convert at **91.32%** in the current campaign.</li>
+                                </ul>
+                            </div>
+                            <div class="slide-card" style="background-color: #4c0519; border-color: #9f1239;">
+                                <div class="slide-card-title" style="color: #fda4af;">⚠️ High Risk / Avoid Segments</div>
+                                <ul style="color: #fecdd3;">
+                                    <li><strong>Debtor Clients</strong>: Clients with personal loans convert at **33.15%**, housing loans at **36.64%** (low disposable savings).</li>
+                                    <li><strong>Blue-Collar Occupation</strong>: Accounts for 1,944 calls but converts at only **36.42%**.</li>
+                                    <li><strong>Unknown contact channel</strong>: Converts at only **22.59%**.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 8 -->
+                    <div class="slide-frame" id="slide-8">
+                        <div class="slide-header">
+                            <span class="slide-category">Recommendations</span>
+                            <span class="slide-number">Slide 8 of 9</span>
+                        </div>
+                        <div class="slide-body">
+                            <div class="slide-card" style="justify-content: flex-start; gap: 0.5rem;">
+                                <div class="slide-card-title">Strategic Action Plan</div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.8rem; color: #cbd5e1;">
+                                    <p><strong>1. Reallocate Calendars:</strong> Shift call center agents away from over-saturated May campaigns. Reallocate 50% of call volumes to March, September, October, and December where conversion is high (82%-90%).</p>
+                                    <p><strong>2. Smart Call Capping:</strong> Implement a hard cap of <strong>3 contact attempts</strong> per client per campaign. Contacting clients beyond 3 times yields diminishing returns (<31%) and damages goodwill.</p>
+                                    <p><strong>3. Tailored Pushing:</strong> Pitch low-risk, predictable returns to Retirees and flexible micro-savings to Students. Avoid cold deposit calls to clients with active loans.</p>
+                                    <p><strong>4. Database Enrichment:</strong> Prioritize cellular contact methods (54% conversion) and enrich the client database to eliminate unknown communication channels.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 9 -->
+                    <div class="slide-frame" id="slide-9">
+                        <div class="slide-header">
+                            <span class="slide-category">Conclusion</span>
+                            <span class="slide-number">Slide 9 of 9</span>
+                        </div>
+                        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 1rem;">
+                            <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
+                                <h4 style="color: white; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem;">Quality Over Volume</h4>
+                                <p style="color: #94a3b8; font-size: 0.85rem; line-height: 1.4;">Shifting to targeted segmentation (students, retirees, high-balance clients) allows the bank to achieve identical deposit volumes with up to 40% lower call center hours.</p>
+                            </div>
+                            <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
+                                <h4 style="color: white; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem;">Focus on Warm Leads</h4>
+                                <p style="color: #94a3b8; font-size: 0.85rem; line-height: 1.4;">Prioritizing prior campaign successes (91.3% conversion rate) ensures immediate high-yield conversions for new savings campaigns.</p>
+                            </div>
+                            <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
+                                <h4 style="color: white; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem;">Cap Call frequency</h4>
+                                <p style="color: #94a3b8; font-size: 0.85rem; line-height: 1.4;">Limiting re-contacts to 3 attempts saves call center overheads, protects client relationships, and optimizes agent time.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Slide Navigation Controls -->
+                <div class="slide-controls">
+                    <button class="slide-btn" id="prev-slide-btn" disabled>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg>
+                        Previous
+                    </button>
+                    <span class="slide-number" id="slide-counter">Slide 1 of 9</span>
+                    <button class="slide-btn" id="next-slide-btn">
+                        Next
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+
+            </div>
+        </section>
+
+
+
+        <!-- Tab 4: Downloads & Resources -->
+        <section class="tab-content" id="downloads-tab">
+            <h3 style="margin-bottom: 1.5rem; font-family: 'Outfit';">Project Files & Resource Center</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Access the raw deliverables generated for this case study. All files have been written directly to the project directory.</p>
+            
+            <div class="download-layout">
+                <div class="download-card">
+                    <div class="dl-icon">📊</div>
+                    <h4 class="dl-title">PowerPoint Deck</h4>
+                    <p class="dl-desc">Standard widescreen 16:9 presentation file featuring slides with custom executive design and formatted tables.</p>
+                    <a href="bank_marketing_case_study.pptx" download class="dl-btn">bank_marketing_case_study.pptx</a>
+                </div>
+
+
+
+
+            </div>
+        </section>
+    </main>
+
+
+
+    <!-- Page Interaction Script -->
+    <script>
+        // Tab switching logic
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const mainTitle = document.getElementById('main-title');
+
+        const titleMap = {
+            'report': 'Business Analytics Case Study Report',
+            'slides': 'Executive Presentation Slides',
+            'downloads': 'Downloads & Resources'
+        };
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const tab = item.getAttribute('data-tab');
+                
+                // Remove active class from all nav items
+                navItems.forEach(nav => nav.classList.remove('active'));
+                // Hide all tab contents
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Set active tab
+                item.classList.add('active');
+                document.getElementById(`${tab}-tab`).classList.add('active');
+
+                // Update page header title
+                mainTitle.innerText = titleMap[tab];
+            });
+        });
+
+        // Dark/Light Mode Toggle logic
+        const modeToggle = document.getElementById('mode-toggle');
+        const modeIcon = document.getElementById('mode-icon');
+        const modeText = document.getElementById('mode-text');
+
+        modeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            
+            if (isLight) {
+                modeIcon.innerHTML = '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>';
+                modeText.innerText = 'Dark Mode';
+            } else {
+                modeIcon.innerHTML = '<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
+                modeText.innerText = 'Light Mode';
+            }
+            
+            // Re-render charts to match color themes
+            renderCharts(isLight);
+        });
+
+        // Presentation slides navigation logic
+        let currentSlide = 1;
+        const totalSlides = 9;
+        const prevBtn = document.getElementById('prev-slide-btn');
+        const nextBtn = document.getElementById('next-slide-btn');
+        const counter = document.getElementById('slide-counter');
+
+        function updateSlide(direction) {
+            // Hide current slide
+            document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+            
+            if (direction === 'next' && currentSlide < totalSlides) {
+                currentSlide++;
+            } else if (direction === 'prev' && currentSlide > 1) {
+                currentSlide--;
+            }
+
+            // Show new slide
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+            // Update counter text
+            counter.innerText = `Slide ${currentSlide} of ${totalSlides}`;
+
+            // Update buttons state
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+
+        prevBtn.addEventListener('click', () => updateSlide('prev'));
+        nextBtn.addEventListener('click', () => updateSlide('next'));
+
+        // Keyboard navigation for slides
+        document.addEventListener('keydown', (e) => {
+            const slidesTab = document.getElementById('slides-tab');
+            if (slidesTab.classList.contains('active')) {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    updateSlide('next');
+                } else if (e.key === 'ArrowLeft') {
+                    updateSlide('prev');
+                }
+            }
+        });
+
+        // embedded stats data
+        const statsData = {
+            importance: {
+                labels: ["Call Duration", "Account Balance", "Customer Age", "Outreach Month", "Outreach Day", "Days Since Last Contact", "Contact Channel", "Occupation (Job)", "Campaign Counts", "Previous Outcome"],
+                importances: [36.87, 8.88, 8.40, 8.32, 7.16, 4.58, 4.48, 3.83, 3.36, 3.34]
+            },
+            duration: {
+                labels: ["0-2 mins", "2-3.5 mins", "3.5-5.5 mins", "5.5-9.5 mins", "9.5+ mins"],
+                rates: [9.02, 32.31, 48.54, 62.80, 84.70]
+            },
+            months: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                calls: [344, 776, 276, 923, 2824, 1222, 1514, 1519, 319, 392, 943, 110],
+                rates: [41.28, 56.83, 89.86, 62.51, 32.76, 44.68, 41.41, 45.29, 84.33, 82.40, 42.74, 90.91]
+            },
+            campaign: {
+                labels: ["1 Attempt", "2 Attempts", "3 Attempts", "4-5 Attempts", "6-10 Attempts", "10+ Attempts"],
+                rates: [53.38, 46.27, 46.78, 39.69, 31.40, 22.38]
+            }
+        };
+
+        // Charts rendering instances
+        let chartImportanceInstance = null;
+        let chartSlideImportanceInstance = null;
+        let chartDurationInstance = null;
+        let chartMonthsInstance = null;
+        let chartCampaignInstance = null;
+
+        function renderCharts(isLight = false) {
+            const fontColor = isLight ? '#0f172a' : '#cbd5e1';
+            const gridColor = isLight ? '#e2e8f0' : '#334155';
+            
+            // Destroy existing charts to prevent overlaps
+            if (chartImportanceInstance) chartImportanceInstance.destroy();
+            if (chartSlideImportanceInstance) chartSlideImportanceInstance.destroy();
+            if (chartDurationInstance) chartDurationInstance.destroy();
+            if (chartMonthsInstance) chartMonthsInstance.destroy();
+            if (chartCampaignInstance) chartCampaignInstance.destroy();
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: fontColor }
+                    },
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: { color: fontColor }
+                    }
+                }
+            };
+
+            // 1. Key Drivers Feature Importance
+            const ctxImp = document.getElementById('chart-importance').getContext('2d');
+            chartImportanceInstance = new Chart(ctxImp, {
+                type: 'bar',
+                data: {
+                    labels: statsData.importance.labels,
+                    datasets: [{
+                        data: statsData.importance.importances,
+                        backgroundColor: '#14b8a6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 2. Slide Driver Importance
+            const ctxSlideImp = document.getElementById('chart-slide-importance').getContext('2d');
+            chartSlideImportanceInstance = new Chart(ctxSlideImp, {
+                type: 'bar',
+                data: {
+                    labels: statsData.importance.labels.slice(0, 8),
+                    datasets: [{
+                        data: statsData.importance.importances.slice(0, 8),
+                        backgroundColor: '#10b981',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1', font: { size: 10 } } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1', font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // 3. Call Duration vs. Subscription Rate
+            const ctxDur = document.getElementById('chart-duration').getContext('2d');
+            chartDurationInstance = new Chart(ctxDur, {
+                type: 'line',
+                data: {
+                    labels: statsData.duration.labels,
+                    datasets: [{
+                        data: statsData.duration.rates,
+                        borderColor: '#14b8a6',
+                        backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#14b8a6',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { color: fontColor } },
+                        y: { 
+                            grid: { color: gridColor }, 
+                            ticks: { 
+                                color: fontColor,
+                                callback: function(value) { return value + '%'; }
+                            },
+                            min: 0,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // 4. Monthly Calls vs Subscription Rate (Dual-Axis)
+            const ctxMonths = document.getElementById('chart-months').getContext('2d');
+            chartMonthsInstance = new Chart(ctxMonths, {
+                type: 'bar',
+                data: {
+                    labels: statsData.months.labels,
+                    datasets: [
+                        {
+                            label: 'Call Volume',
+                            type: 'bar',
+                            data: statsData.months.calls,
+                            backgroundColor: isLight ? '#cbd5e1' : '#1e293b',
+                            borderColor: gridColor,
+                            borderWidth: 1,
+                            yAxisID: 'yVolume',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Subscription Rate',
+                            type: 'line',
+                            data: statsData.months.rates,
+                            borderColor: '#ef4444',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#ef4444',
+                            yAxisID: 'yRate',
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { color: fontColor }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: gridColor },
+                            ticks: { color: fontColor }
+                        },
+                        yVolume: {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: 'Call Volume', color: fontColor },
+                            grid: { color: gridColor },
+                            ticks: { color: fontColor }
+                        },
+                        yRate: {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: 'Subscription Rate (%)', color: '#ef4444' },
+                            ticks: { 
+                                color: '#ef4444',
+                                callback: function(value) { return value + '%'; }
+                            },
+                            min: 0,
+                            max: 100,
+                            grid: { drawOnChartArea: false } // Only draw grids for left axis
+                        }
+                    }
+                }
+            });
+
+            // 5. Contact Attempts vs. Subscription Rate
+            const ctxCamp = document.getElementById('chart-campaign').getContext('2d');
+            chartCampaignInstance = new Chart(ctxCamp, {
+                type: 'bar',
+                data: {
+                    labels: statsData.campaign.labels,
+                    datasets: [{
+                        data: statsData.campaign.rates,
+                        backgroundColor: ['#3b82f6', '#10b981', '#14b8a6', '#f59e0b', '#ec4899', '#ef4444'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { grid: { color: gridColor }, ticks: { color: fontColor } },
+                        y: { 
+                            grid: { color: gridColor }, 
+                            ticks: { 
+                                color: fontColor,
+                                callback: function(value) { return value + '%'; }
+                            },
+                            min: 0,
+                            max: 60
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Charts on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCharts(false);
+        });
+    </script>
+</body>
+</html>
